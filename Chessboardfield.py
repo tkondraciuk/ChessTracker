@@ -24,4 +24,11 @@ class ChessboardField:
     def findMarkers(self,image):
         hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
         mask=cv2.inRange(hsv,self.marker_min, self.marker_max)
-        return mask
+        return mask
+
+    def findBlackPiece(self,image):
+        hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
+        mask=cv2.inRange(hsv,self.blackPiece_min, self.blackPiece_max)
+
+    
+    
