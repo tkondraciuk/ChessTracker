@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import sys
 import math
-import Chessboardfield
+import ChessboardField
 import numpy.linalg as linalg
 
 def StartCalibration(cameraHandler):
@@ -62,16 +62,3 @@ class Calibration:
         for p in zip(getSubPoints(self,firstPoint,verSecondPoint),getSubPoints(self,horSecondPoint,dimSecondPoint)):
             row=[q  for q in getSubPoints(self,p[0],p[1])]
             self.verticles.append(row)
-
-        
-
-    
-
-    
-
-
-
-        
-
-
-

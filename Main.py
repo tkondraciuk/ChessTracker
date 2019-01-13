@@ -11,7 +11,7 @@ def getMask(image):
         cmax=np.array([75,167,131])
         return cv2.inRange(image,cmin, cmax)
 
-ch=CameraHandler.CameraHandler(1)
+ch=CameraHandler.CameraHandler(2)
 I=ch.GetFrame()
 image=I
 calib=Calibration.StartCalibration(ch)

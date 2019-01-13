@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 import Calibration
-import Chessboardfield
-import Chessboardfield as CF
+import ChessboardField
+import ChessboardField as CF
 from math import *
 
 def getMask(image):
