@@ -14,8 +14,6 @@ while True:
 ch=CameraHandler.CameraHandler(2) 
 calib=Calibration.Calibration(ch)
 calib.StartCalibration()
-fieldSeparator=FS.FieldSeparator(calib)
-fieldSeparator.createChessboardFields()
 i=0
 
 print('Umiesc figury na planszy i wcisnij Spacje')
