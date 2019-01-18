@@ -11,11 +11,9 @@ while True:
     if key.is_pressed('Space'):
         break
 
-ch=CameraHandler.CameraHandler(2)
-I=ch.GetFrame()
-image=I 
-calib=Calibration.StartCalibration(ch)
-calib=Calibration.setChessboardVerticles(calib)
+ch=CameraHandler.CameraHandler(2) 
+calib=Calibration.Calibration(ch)
+calib.StartCalibration()
 fieldSeparator=FS.FieldSeparator(calib)
 fieldSeparator.createChessboardFields()
 i=0
