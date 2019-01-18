@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import sys
+import KeyboardList as key
 
 class ChessboardSeparationCalibrator:
 
@@ -9,7 +11,8 @@ class ChessboardSeparationCalibrator:
 
     def __init__(self,cameraHandler):
         self.cameraHandler=cameraHandler
-        cv2.namedWindow(self.windowName)
+        image=cameraHandler.GetFrame()
+        self.selectedMarkerRadius=self.getMarkerRadius(image,0.01)
 
 
     def Start(self):
@@ -40,21 +43,24 @@ class ChessboardSeparationCalibrator:
                     chessboardVericles.append(clickPoint)
         
         chessboardVericles=[]
-        EscASCII=27
-        SpaceASCII=32
+        cv2.namedWindow(self.windowName)
         cv2.setMouseCallback(self.windowName,getVerticle)
         while True:
             image=self.cameraHandler.GetFrame()
             image=markVerticles(self,image)
             cv2.imshow(self.windowName, image)
 
-            if cv2.waitKey(1) & 0xff == SpaceASCII:
+            if cv2.waitKey(1) & 0xff == key.Space:
                 if len(chessboardVericles)<4:
                     print('Zaznacz wierzcholki szachownicy, a następnie wcisnij Spacje')
                 else:
                     break
 
-            if cv2.waitKey(1) & 0xff==EscASCII:
+            if cv2.waitKey(1) & 0xff==key.Esc:
                 sys.exit()
         cv2.destroyAllWindows()
         return chessboardVericles
+
+    def getMarkerRadius(self, image, factor):
+        size=np.mean(image.shape,dtype=np.uint32)
+        return int(size * factor)

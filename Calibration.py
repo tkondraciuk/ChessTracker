@@ -4,7 +4,8 @@ import sys
 import math
 import ChessboardField
 import FieldSeparator as FS
-from ChessboardSeparationCalibrator import ChessboardSeparationCalibrator
+from ChessboardSeparationCalibrator import *
+from MarkerExtractionCalibrator import *
 
 class Calibration:
     verticles=[]
@@ -12,6 +13,7 @@ class Calibration:
     def __init__(self, cameraHandler):
         self.cameraHandler=cameraHandler
         self.findChessboardCalibrator=ChessboardSeparationCalibrator(cameraHandler)
+        self.extractMarkersCalibrator=MarkerExtractionCalibrator(cameraHandler)
 
 
     def getFieldPoints(self):
@@ -33,7 +35,11 @@ class Calibration:
     def StartCalibration(self):
         self.verticles=self.findChessboardCalibrator.Start()
         self.getFieldPoints()
+        self.cmin, self.cmax = self.extractMarkersCalibrator.Start()
 
     def GetFieldSeparator(self):
         return FS.FieldSeparator(self)
+
+    def getColorRange(self):
+        return self.cmin, self.cmax
 

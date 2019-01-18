@@ -12,20 +12,17 @@ def imopen(image, kernelSize):
 
 class ChessboardField:
 
-    # Markery na dzien
-    # marker_min=np.array([38,33,0], dtype=np.uint8)
-    # marker_max=np.array([83,255,255], dtype=np.uint8)
-
-    # Markery na noc
     marker_min=np.array([31,33,0], dtype=np.uint8)
     marker_max=np.array([83,255,255], dtype=np.uint8)
 
 
-    def __init__(self, label, image):
+    def __init__(self, label, image, colorRange):
         self.updateImage(image, checkState=False)
         self.emptyFieldMarker=self.marker
         self.label=label
         self.state=FIELD_STATE_UNKNOWN
+        self.marker_min=colorRange[0]
+        self.marker_max=colorRange[1]
 
 
     def findMarkers(self,image):
