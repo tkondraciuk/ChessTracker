@@ -35,15 +35,15 @@ class ChessboardField:
             l=[]
             for row in a:
                 for f in row:
-                    if f!=0:
-                        l.append(f)
+                    if f[1]!=0:
+                        l.append(f[0])
             return l
         if self.isEmpty():
             self.state=FIELD_EMPTY
             return
         pieceMask=cv2.bitwise_xor(self.markerMask,self.emptyFieldMarker)
-        pieceColorSample=cv2.bitwise_and(self.image,self.image,mask=pieceMask)
-        pieceColorSample=cv2.cvtColor(pieceColorSample, cv2.COLOR_BGR2GRAY)
+        pieceColorSample=cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        pieceColorSample=cv2.merge([pieceColorSample,pieceMask])  #cv2.bitwise_and(self.image,self.image,mask=pieceMask)
 
         if np.median(getNonZeroValues(pieceColorSample))>45:
             self.state=FIELD_WHITE_PIECE
