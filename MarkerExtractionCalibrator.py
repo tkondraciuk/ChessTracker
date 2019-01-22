@@ -6,6 +6,7 @@ import sys
 class MarkerExtractionCalibrator:
 
     windowName='Calibration - Extract Markers'
+    trackbarsName='Trackbars'
     hueMinLabel='Min hue: '
     hueMaxLabel='Max hue: '
     saturationMinLabel='Min saturation: '
@@ -24,12 +25,12 @@ class MarkerExtractionCalibrator:
 
     def AskUserForExtractionCriteria(self):
         def getValuesFromTrackbars():
-            hmin=cv2.getTrackbarPos(self.hueMinLabel,self.windowName)
-            hmax=cv2.getTrackbarPos(self.hueMaxLabel,self.windowName)
-            smin=cv2.getTrackbarPos(self.saturationMinLabel,self.windowName)
-            smax=cv2.getTrackbarPos(self.saturationMaxLabel,self.windowName)
-            vmin=cv2.getTrackbarPos(self.valueMinLabel,self.windowName)
-            vmax=cv2.getTrackbarPos(self.valueMaxLabel,self.windowName)
+            hmin=cv2.getTrackbarPos(self.hueMinLabel,self.trackbarsName)
+            hmax=cv2.getTrackbarPos(self.hueMaxLabel,self.trackbarsName)
+            smin=cv2.getTrackbarPos(self.saturationMinLabel,self.trackbarsName)
+            smax=cv2.getTrackbarPos(self.saturationMaxLabel,self.trackbarsName)
+            vmin=cv2.getTrackbarPos(self.valueMinLabel,self.trackbarsName)
+            vmax=cv2.getTrackbarPos(self.valueMaxLabel,self.trackbarsName)
 
             cmin=np.array([hmin, smin, vmin], dtype=np.uint8)
             cmax=np.array([hmax, smax, vmax], dtype=np.uint8)
@@ -46,12 +47,13 @@ class MarkerExtractionCalibrator:
             pass
 
         cv2.namedWindow(self.windowName)
-        cv2.createTrackbar(self.hueMinLabel,self.windowName,0,127,doNothing)
-        cv2.createTrackbar(self.hueMaxLabel,self.windowName,127,127,doNothing)
-        cv2.createTrackbar(self.saturationMinLabel,self.windowName,0,255,doNothing)
-        cv2.createTrackbar(self.saturationMaxLabel,self.windowName,255,255,doNothing)
-        cv2.createTrackbar(self.valueMinLabel,self.windowName,0,255,doNothing)
-        cv2.createTrackbar(self.valueMaxLabel,self.windowName,255,255,doNothing)
+        cv2.namedWindow(self.trackbarsName)
+        cv2.createTrackbar(self.hueMinLabel,self.trackbarsName,0,127,doNothing)
+        cv2.createTrackbar(self.hueMaxLabel,self.trackbarsName,127,127,doNothing)
+        cv2.createTrackbar(self.saturationMinLabel,self.trackbarsName,0,255,doNothing)
+        cv2.createTrackbar(self.saturationMaxLabel,self.trackbarsName,255,255,doNothing)
+        cv2.createTrackbar(self.valueMinLabel,self.trackbarsName,0,255,doNothing)
+        cv2.createTrackbar(self.valueMaxLabel,self.trackbarsName,255,255,doNothing)
 
         while True:
             frame=self.cameraHandler.GetFrame()
