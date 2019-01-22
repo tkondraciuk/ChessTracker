@@ -35,7 +35,7 @@ while True:
                     factor=0
                 else:
                     raise Exception('Blad w okreslaniu stanu pola')
-                cv2.imwrite('Pola/{}.jpg'.format(i),np.ones((30,30) ,dtype=np.uint8)*factor)
+                cv2.imwrite('Pola/{}.jpg'.format(field.label),np.ones((30,30) ,dtype=np.uint8)*factor)
                 i+=1
         print("Stan gry zaktualizowano. Wykonaj ruch i wcisnij spacje.")
         

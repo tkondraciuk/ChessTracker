@@ -52,8 +52,6 @@ class ChessboardField:
 
     def isEmpty(self):
         return np.any(self.marker)
-        
-
 
     def updateImage(self, image, checkState=True):
         self.image=image
@@ -61,6 +59,14 @@ class ChessboardField:
         self.marker=imopen(self.markerMask,(6,6))
         if checkState:
             self.checkFieldState()
+
+    def setLabel(self,label):
+        if label[0].isdigit() and label[1].isalpha():
+            self.label=label[1]+label[0]
+        elif label[0].isalpha and label[1].isdigit():
+            self.label=label
+        else:
+            raise Exception('Błąd w etykietowaniu pól')
 
     
     
