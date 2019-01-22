@@ -14,6 +14,7 @@ while True:
 ch=CameraHandler.CameraHandler(2) 
 calib=Calibration.Calibration(ch)
 calib.StartCalibration()
+fieldSeparator=calib.GetFieldSeparator()
 i=0
 
 print('Umiesc figury na planszy i wcisnij Spacje')
@@ -25,7 +26,6 @@ while True:
         fieldSeparator.updateChessboardFields()
         for row in fieldSeparator.fields:
             for field in row:
-                field.checkFieldState()
                 factor=None
                 if field.state==0:
                     factor=128

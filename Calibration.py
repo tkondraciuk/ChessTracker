@@ -6,6 +6,7 @@ import ChessboardField
 import FieldSeparator as FS
 from ChessboardSeparationCalibrator import *
 from MarkerExtractionCalibrator import *
+from FieldSeparator import FieldSeparator
 
 class Calibration:
     verticles=[]
@@ -36,6 +37,8 @@ class Calibration:
         self.verticles=self.findChessboardCalibrator.Start()
         self.getFieldPoints()
         self.cmin, self.cmax = self.extractMarkersCalibrator.Start()
+        self.FieldSeparator=FieldSeparator(self)
+        self.FieldSeparator.createChessboardFields()
 
     def GetFieldSeparator(self):
         return FS.FieldSeparator(self)
