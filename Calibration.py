@@ -8,6 +8,7 @@ from ChessboardSeparationCalibrator import *
 from MarkerExtractionCalibrator import *
 from FieldSeparator import FieldSeparator
 from FieldsLabelerCalibrator import FieldsLabelerCalibrator
+from ChessboardState import ChessboardState
 
 class Calibration:
     verticles=[]
@@ -42,10 +43,14 @@ class Calibration:
         self.FieldSeparator.createChessboardFields()
         self.fieldLabererCalibrator=FieldsLabelerCalibrator(self.FieldSeparator)
         self.fieldLabererCalibrator.Start()
+        self.chessboardState=ChessboardState(self.FieldSeparator)
 
     def GetFieldSeparator(self):
         return FS.FieldSeparator(self)
 
     def getColorRange(self):
         return self.cmin, self.cmax
+
+    def getChessboardStateInstance(self):
+        return self.chessboardState
 

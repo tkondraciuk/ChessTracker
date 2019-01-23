@@ -1,10 +1,23 @@
 import numpy as np
 import cv2
+from Piece import *
 
 FIELD_STATE_UNKNOWN=-1
 FIELD_EMPTY=0
-FIELD_WHITE_PIECE=1
-FIELD_BLACK_PIECE=2
+
+FIELD_WHITE_PIECE= COLOR_WHITE
+FIELD_BLACK_PIECE= COLOR_BLACK
+
+NAMES={
+    COLOR_WHITE: 'Bialy',
+    COLOR_BLACK: 'Czarny',
+    FIGURE_ROOK: 'Wieza',
+    FIGURE_KNIGHT: 'Skoczek',
+    FIGURE_BISHOP: 'Goniec',
+    FIGURE_QUEEN: 'Krolowa',
+    FIGURE_KING: 'Krol',
+    FIGURE_PAWN: 'Pion'
+}
 
 def imopen(image, kernelSize):
     kernel=np.ones(kernelSize,np.uint8)
@@ -23,6 +36,7 @@ class ChessboardField:
         self.state=FIELD_STATE_UNKNOWN
         self.marker_min=colorRange[0]
         self.marker_max=colorRange[1]
+        self.currentPiece=buildEmptyPiece()
 
 
     def findMarkers(self,image):
@@ -67,6 +81,33 @@ class ChessboardField:
             self.label=label
         else:
             raise Exception('Błąd w etykietowaniu pól')
+
+    def initCurrentPiece(self, color, figure):
+        if not self.currentPiece.empty:
+            return
+        self.currentPiece=Piece(color,figure)
+
+    def setCurrentPiece(self, piece):
+        self.currentPiece=piece
+
+    def releaseField(self):
+        self.currentPiece=buildEmptyPiece()
+
+    def getName(self):
+        if self.currentPiece.empty:
+            return 'EMPTY ({})'.format(self.label)
+        color=NAMES[self.currentPiece.color]
+        figure=NAMES[self.currentPiece.figure]
+        field=self.label
+        return '{} {}({})'.format(color, figure, field)
+
+    def hasChanged(self):
+        if self.state == FIELD_EMPTY and self.currentPiece.empty:
+            return False
+        elif self.state == self.currentPiece.color:
+            return False
+        else:
+            return True
 
     
     
