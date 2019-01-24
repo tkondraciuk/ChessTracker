@@ -15,6 +15,7 @@ ch=CameraHandler.CameraHandler(2)
 calib=Calibration.Calibration(ch)
 calib.StartCalibration()
 fieldSeparator=calib.GetFieldSeparator()
+chessboardState=calib.getChessboardStateInstance()
 i=0
 
 print('Umiesc figury na planszy i wcisnij Spacje')
@@ -23,19 +24,20 @@ while True:
         break
     if key.is_pressed('Space'):
         i=0 
-        fieldSeparator.updateChessboardFields()
-        for row in fieldSeparator.fields:
-            for field in row:
-                factor=None
-                if field.state==0:
-                    factor=128
-                elif field.state==1:
-                    factor=225
-                elif field.state==2:
-                    factor=0
-                else:
-                    raise Exception('Blad w okreslaniu stanu pola')
-                cv2.imwrite('Pola/{}.jpg'.format(field.label),np.ones((30,30) ,dtype=np.uint8)*factor)
-                i+=1
-        print("Stan gry zaktualizowano. Wykonaj ruch i wcisnij spacje.")
-        
+        message=chessboardState.Update()
+        print(message)
+        for field in chessboardState.fields.values():
+            factor=None
+            if field.state==0:
+                factor=128
+            elif field.state==1:
+                factor=225
+            elif field.state==2:
+                factor=0
+            else:
+                raise Exception('Blad w okreslaniu stanu pola')
+                
+            cv2.imwrite('Pola/{}.jpg'.format(field.getName()),np.ones((30,30) ,dtype=np.uint8)*factor)
+
+        print("Wykonaj następny ruch i wcisnij spacje.")
+           
