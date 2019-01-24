@@ -24,7 +24,8 @@ while True:
         break
     if key.is_pressed('Space'):
         i=0 
-        chessboardState.Update()
+        message=chessboardState.Update()
+        print(message)
         for field in chessboardState.fields.values():
             factor=None
             if field.state==0:
@@ -38,5 +39,5 @@ while True:
                 
             cv2.imwrite('Pola/{}.jpg'.format(field.getName()),np.ones((30,30) ,dtype=np.uint8)*factor)
 
-        print("Stan gry zaktualizowano. Wykonaj ruch i wcisnij spacje.")
+        print("Wykonaj następny ruch i wcisnij spacje.")
            

@@ -48,3 +48,38 @@ class ChessboardState:
         for key in blackKeys:
             fields[key].initCurrentPiece(COLOR_BLACK, FIGURE_PAWN)
 
+    def Update(self):
+        self.fieldSeparator.updateChessboardFields()
+        changes=list(filter(lambda f: f.hasChanged(), self.fields.values()))
+        if len(changes)==0:
+            return ''
+        else:
+            return self.getMove(changes)
+
+    def getMove(self,changes):
+        message=''
+        if len(changes)==4:
+            message=self.getCastling(changes)
+        elif len(changes)==2:
+            startField, targetField=self.getStartAndTargetFields(changes)
+            message='Ruch {} na {}'.format(startField.getName(), targetField.label)
+            targetField.setCurrentPiece(startField.currentPiece)
+            startField.releaseField()
+        else:
+            raise Exception('Wystąpił błąd przy odczytaniu ruchu')
+
+        return message
+
+
+    def getStartAndTargetFields(self,changes):
+        targetFields=list(filter(lambda f: f.state>0 and f.currentPiece.empty, changes))
+        startFields=list(filter(lambda f: not f in targetFields, changes))
+
+        if len(startFields)==1 and len(targetFields)==1:
+            return startFields[0], targetFields[0]
+        else:
+            return startFields, targetFields
+
+        
+        
+        
