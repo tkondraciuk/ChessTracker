@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from ChessboardField import ChessboardField
 from Piece import *
+from CommonMessenger import CommonMessenger
 
 class ChessboardState:
     def __init__(self, fieldSeparator):
@@ -9,6 +10,7 @@ class ChessboardState:
         self.fields=self.getFieldsDict(fieldSeparator.fields)
         self.lastFields=dict()
         self.placePieces()
+        self.messenger=CommonMessenger()
     
     def getFieldsDict(self, fields):
         fieldsDict=dict()
@@ -62,9 +64,10 @@ class ChessboardState:
             message=self.getCastling(changes)
         elif len(changes)==2:
             startField, targetField=self.getStartAndTargetFields(changes)
-            message='Ruch {} na {}'.format(startField.getName(), targetField.label)
-            targetField.setCurrentPiece(startField.currentPiece)
-            startField.releaseField()
+            ret, message=self.messenger.getMessage(startField, targetField)
+            if ret:
+                targetField.setCurrentPiece(startField.currentPiece)
+                startField.releaseField()
         else:
             raise Exception('Wystąpił błąd przy odczytaniu ruchu')
 
@@ -72,8 +75,11 @@ class ChessboardState:
 
 
     def getStartAndTargetFields(self,changes):
-        targetFields=list(filter(lambda f: f.state>0 and f.currentPiece.empty, changes))
-        startFields=list(filter(lambda f: not f in targetFields, changes))
+        #Pola z których zniknęła figura
+        startFields=list(filter(lambda f: f.state==0 and not f.currentPiece.empty, changes))
+
+        #Pozostałe pola
+        targetFields=list(filter(lambda f: not f in startFields, changes))
 
         if len(startFields)==1 and len(targetFields)==1:
             return startFields[0], targetFields[0]
