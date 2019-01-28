@@ -6,12 +6,24 @@ import time
 import CameraHandler
 import keyboard as key
 
+
+def readCameraId():
+    f=open('./cameraId.txt','r')
+    fileString=f.read()
+    result=fileString.strip()
+    if result.isdigit():
+        return int(result)
+    else:
+        return 0
+    
+
 print('Usun wszystkie figury z planszy i wcisnij Spacje')
 while True:
     if key.is_pressed('Space'):
         break
 
-ch=CameraHandler.CameraHandler(2) 
+cameraId=readCameraId()
+ch=CameraHandler.CameraHandler(cameraId) 
 calib=Calibration.Calibration(ch)
 calib.StartCalibration()
 fieldSeparator=calib.GetFieldSeparator()
