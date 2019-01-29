@@ -30,6 +30,8 @@ class FieldSeparator:
                 field=CF.ChessboardField('', fieldImage, colorRange)
                 row.append(field)
             self.fields.append(row)
+
+            
     def updateChessboardFields(self):
         self.image=self.cameraHandler.GetFrame()
         for i in range(8):

@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from Piece import *
+from Classifier import Classifier
 
 FIELD_STATE_UNKNOWN=-1
 FIELD_EMPTY=0
@@ -37,32 +38,15 @@ class ChessboardField:
         self.marker_min=colorRange[0]
         self.marker_max=colorRange[1]
         self.currentPiece=buildEmptyPiece()
+        self.classifier=Classifier(threshold=45)
 
+    def setClassifierThreshold(self, threshold):
+        self.classifier.setThreshold(threshold)
 
     def findMarkers(self,image):
         hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)
         mask=cv2.inRange(hsv,self.marker_min, self.marker_max)
         return mask
-
-    def checkFieldState(self):
-        def getNonZeroValues(a):
-            l=[]
-            for row in a:
-                for f in row:
-                    if f[1]!=0:
-                        l.append(f[0])
-            return l
-        if self.isEmpty():
-            self.state=FIELD_EMPTY
-            return
-        pieceMask=cv2.bitwise_xor(self.markerMask,self.emptyFieldMarker)
-        pieceColorSample=cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        pieceColorSample=cv2.merge([pieceColorSample,pieceMask])  #cv2.bitwise_and(self.image,self.image,mask=pieceMask)
-
-        if np.median(getNonZeroValues(pieceColorSample))>45:
-            self.state=FIELD_WHITE_PIECE
-        else:
-            self.state=FIELD_BLACK_PIECE
 
     def isEmpty(self):
         return np.any(self.marker)
@@ -72,7 +56,7 @@ class ChessboardField:
         self.markerMask=self.findMarkers(image)
         self.marker=imopen(self.markerMask,(6,6))
         if checkState:
-            self.checkFieldState()
+            self.state=self.classifier.getFieldState(self)
 
     def setLabel(self,label):
         if label[0].isdigit() and label[1].isalpha():
