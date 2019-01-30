@@ -4,11 +4,13 @@ from Classifier import Classifier
 from math import floor
 from FieldSeparator import FieldSeparator
 from ChessboardField import FIELD_BLACK_PIECE, FIELD_WHITE_PIECE
+import keyboard
+import sys
 
 
 class ThresholdCalibrator:
-    whiteNumber = 5
-    blackNumber = 5
+    whiteNumber = 16
+    blackNumber = 16
 
     def __init__(self, fieldSeparator):
         self.fieldSeparator = fieldSeparator
@@ -20,6 +22,7 @@ class ThresholdCalibrator:
             f.classifier = self.classifier
 
     def Start(self):
+        self.waitForFiguresPlacement()
         minThresholdFound = False
         maxThresholdFound = False
         thresholdsFound = False
@@ -35,6 +38,9 @@ class ThresholdCalibrator:
             if not maxThresholdFound:
                 self.maxThreshold -= 1
             thresholdsFound = maxThresholdFound and minThresholdFound
+            print('Min: '+str(self.minThreshold))
+            print('Max: '+str(self.maxThreshold))
+            print()
 
         if self.minThreshold <= self.maxThreshold:
             classifierThreshold = (self.minThreshold + self.maxThreshold) / 2
@@ -48,4 +54,12 @@ class ThresholdCalibrator:
         self.fieldSeparator.updateChessboardFields()
         states = list(map(lambda x: x.state, self.fields))
         return states.count(FIELD_WHITE_PIECE) == self.whiteNumber and states.count(FIELD_BLACK_PIECE) == self.blackNumber
-
+
+    def waitForFiguresPlacement(self):
+        print('Umieść figury na pozycjach startowych i wciśnij Spację')
+        while True:
+            if keyboard.is_pressed('Space'):
+                break
+            if keyboard.is_pressed('Esc'):
+                sys.exit()
+

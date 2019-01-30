@@ -9,6 +9,7 @@ from MarkerExtractionCalibrator import *
 from FieldSeparator import FieldSeparator
 from FieldsLabelerCalibrator import FieldsLabelerCalibrator
 from ChessboardState import ChessboardState
+from ThresholdCalibrator import ThresholdCalibrator
 
 class Calibration:
     verticles=[]
@@ -41,6 +42,8 @@ class Calibration:
         self.cmin, self.cmax = self.extractMarkersCalibrator.Start()
         self.FieldSeparator=FieldSeparator(self)
         self.FieldSeparator.createChessboardFields()
+        self.thresholdCalibrator=ThresholdCalibrator(self.FieldSeparator)
+        self.thresholdCalibrator.Start()
         self.fieldLabererCalibrator=FieldsLabelerCalibrator(self.FieldSeparator)
         self.fieldLabererCalibrator.Start()
         self.chessboardState=ChessboardState(self.FieldSeparator)
