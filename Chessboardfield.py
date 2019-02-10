@@ -28,6 +28,7 @@ class ChessboardField:
 
     marker_min=np.array([31,33,0], dtype=np.uint8)
     marker_max=np.array([83,255,255], dtype=np.uint8)
+    strel=(3,3)
 
 
     def __init__(self, label, image, colorRange):
@@ -54,7 +55,7 @@ class ChessboardField:
     def updateImage(self, image, checkState=True):
         self.image=image
         self.markerMask=self.findMarkers(image)
-        self.marker=imopen(self.markerMask,(6,6))
+        self.marker=imopen(self.markerMask,self.strel)
         if checkState:
             self.state=self.classifier.getFieldState(self)
 
