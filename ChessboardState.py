@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from ChessboardField import ChessboardField
+from ChessboardField import ChessboardField, FIELD_BLACK_PIECE, FIELD_WHITE_PIECE
 from Piece import *
 from CommonMessenger import CommonMessenger
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
@@ -79,6 +79,19 @@ class ChessboardState:
             raise Exception('Wystąpił błąd przy odczytaniu ruchu')
 
         return message
+
+    def getCastling(self, changes):
+        succes=True
+        startFields, targetFields=self.getStartAndTargetFields(changes)
+        piecesColor=np.mean([f.currentPiece.color for f in startFields])
+        if piecesColor==FIELD_BLACK_PIECE:
+            #Czy figury na zmianach to wieża i król i czy stoją we właściwych miejscach
+            king=[f for f in startFields if f.currentPiece.figure==FIGURE_KING and f.label=='E8']
+            rook=[f for f in startFields if f.currentPiece.figure==FIGURE_ROOK and f.label in ['A8', 'H8']]
+            if len(king)==0 or len(rook)==0:
+                succes=False
+            
+
 
 
     def getStartAndTargetFields(self,changes):
