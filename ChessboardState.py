@@ -85,11 +85,31 @@ class ChessboardState:
         startFields, targetFields=self.getStartAndTargetFields(changes)
         piecesColor=np.mean([f.currentPiece.color for f in startFields])
         if piecesColor==FIELD_BLACK_PIECE:
-            #Czy figury na zmianach to wieża i król i czy stoją we właściwych miejscach
             king=[f for f in startFields if f.currentPiece.figure==FIGURE_KING and f.label=='E8']
             rook=[f for f in startFields if f.currentPiece.figure==FIGURE_ROOK and f.label in ['A8', 'H8']]
-            if len(king)==0 or len(rook)==0:
-                succes=False
+            shortCastlingPath=['F8','G8']
+            longCastlingPath=['B8','C8','D8']
+        elif piecesColor==FIELD_WHITE_PIECE:
+            king=[f for f in startFields if f.currentPiece.figure==FIGURE_KING and f.label=='E1']
+            rook=[f for f in startFields if f.currentPiece.figure==FIGURE_ROOK and f.label in ['A1', 'H1']]
+            shortCastlingPath=['F1','G1']
+            longCastlingPath=['B1','C1','D1']
+        else:
+            return False
+
+        king=king[0]
+        rook=rook[0]
+
+        if rook.label[0]=='A':
+            castlingType='long'
+            kingTargetPoint='C'+king.label[1]
+            rookTargetPoint='D'+rook.label[1]
+        else:
+            castlingType='short'
+            kingTargetPoint='G'+king.label[1]
+            rookTargetPoint='F'+rook.label[1]
+           
+            
             
 
 
