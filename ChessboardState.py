@@ -3,6 +3,7 @@ import numpy as np
 from ChessboardField import ChessboardField
 from Piece import *
 from CommonMessenger import CommonMessenger
+from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
 
 class ChessboardState:
     def __init__(self, fieldSeparator):
@@ -11,6 +12,7 @@ class ChessboardState:
         self.lastFields=dict()
         self.placePieces()
         self.messenger=CommonMessenger()
+        self.logger=Logger()
     
     def getFieldsDict(self, fields):
         fieldsDict=dict()
@@ -52,6 +54,8 @@ class ChessboardState:
 
     def Update(self):
         self.fieldSeparator.updateChessboardFields()
+        self.fieldSeparator.Log()
+        self.logger.saveFieldStates(self.fields.values())
         changes=list(filter(lambda f: f.hasChanged(), self.fields.values()))
         if len(changes)==0:
             return ''
@@ -61,14 +65,17 @@ class ChessboardState:
     def getMove(self,changes):
         message=''
         if len(changes)==4:
+            self.logger.log('4 changes found. Castling detected!', MESSTYPE_INFO)
             message=self.getCastling(changes)
         elif len(changes)==2:
+            self.logger.log('2 changes found.', MESSTYPE_INFO)
             startField, targetField=self.getStartAndTargetFields(changes)
             ret, message=self.messenger.getMessage(startField, targetField)
             if ret:
                 targetField.setCurrentPiece(startField.currentPiece)
                 startField.releaseField()
         else:
+            self.logger.log(str(len(changes))+' changes found. Can\'t recognize the movement', MESSTYPE_ERROR)
             raise Exception('Wystąpił błąd przy odczytaniu ruchu')
 
         return message

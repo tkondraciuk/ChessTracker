@@ -4,6 +4,7 @@ import KeyboardList as key
 import ChessboardField as CF
 import keyboard
 import sys
+from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
 
 DIRECTION_NORTH=0
 DIRECTION_EAST=1
@@ -22,19 +23,30 @@ class FieldsLabelerCalibrator:
     def __init__(self, fieldSeparator):
         self.fields=[] 
         self.fieldSeparator=fieldSeparator
+        self.logger=Logger()
 
     def Start(self):
+        self.logger.log('Field Objects Labeling started', MESSTYPE_INFO)
         self.waitForPiecesPlacement()
         orient=self.getOrientation()
+        orientString=''
+        self.logger.log('Chessboard orientation found: '+orientString, MESSTYPE_INFO)
 
         if orient==DIRECTION_NORTH:
             self.labelFields(self.LETTER_REVERSAL,self.NUMBER_NORMAL)
+            orientString='NORTH'
         elif orient==DIRECTION_SOUTH:
             self.labelFields(self.LETTER_NORMAL, self.NUMBER_REVERSAL)
+            orientString='SOUTH'
         elif orient==DIRECTION_EAST:
             self.labelFields(self.NUMBER_REVERSAL, self.LETTER_REVERSAL)
+            orientString='EAST'
         elif orient==DIRECTION_WEST:
             self.labelFields(self.NUMBER_NORMAL, self.LETTER_NORMAL)
+            orientString='WEST'
+
+        self.logger.log('Labeling successfully finished!', MESSTYPE_INFO)
+        
 
 
     def waitForPiecesPlacement(self):
@@ -43,9 +55,11 @@ class FieldsLabelerCalibrator:
             if keyboard.is_pressed('Space'):
                 break
             if keyboard.is_pressed(key.Esc):
+                self.logger.log('User canceled calibration', MESSTYPE_INFO)
                 sys.exit()
 
         self.fieldSeparator.updateChessboardFields()
+        self.fieldSeparator.Log('PiecesStartPlacement')
         self.fields=self.fieldSeparator.fields
 
     def getOrientation(self):
@@ -59,6 +73,7 @@ class FieldsLabelerCalibrator:
         elif self.isWhiteSide([x[:1] for x in fields]) and self.isBlackSide([x[6:] for x in fields]):
             return DIRECTION_WEST
         else:
+            self.logger.log('Can\'t recognize a pieces colors! ', MESSTYPE_ERROR)
             raise Exception('Nastąpił błąd w rozpoznaniu kolorów figur!')
 
     def isBlackSide(self,side):

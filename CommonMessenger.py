@@ -26,5 +26,5 @@ class CommonMessenger:
         capturedPieceName=target.getName()
         return '{} bije {}'.format(pieceName, capturedPieceName)
 
-    def getCastlingMessage(self):
+    def getCastlingMessage(self, rook):
         return True, 'Roszada'

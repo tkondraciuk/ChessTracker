@@ -28,7 +28,7 @@ class ChessboardField:
 
     marker_min=np.array([31,33,0], dtype=np.uint8)
     marker_max=np.array([83,255,255], dtype=np.uint8)
-    strel=(3,3)
+    strel=(5,5)
 
 
     def __init__(self, label, image, colorRange):
