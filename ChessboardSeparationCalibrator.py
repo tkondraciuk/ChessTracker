@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import sys
 import KeyboardList as key
+from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
 
 class ChessboardSeparationCalibrator:
 
@@ -13,10 +14,14 @@ class ChessboardSeparationCalibrator:
         self.cameraHandler=cameraHandler
         image=cameraHandler.GetFrame()
         self.selectedMarkerRadius=self.getMarkerRadius(image,0.01)
+        self.logger=Logger()
 
 
     def Start(self):
-        return self.AskUserForVerticles()
+        self.logger.log('Chessboard Separation Calibration started', MESSTYPE_INFO)
+        result = self.AskUserForVerticles()
+        self.logger.log('Chesboard vertices got: '+', '.join([str(x) for x in result]), MESSTYPE_INFO)
+        return result
 
     
     def AskUserForVerticles(self):
@@ -57,6 +62,7 @@ class ChessboardSeparationCalibrator:
                     break
 
             if cv2.waitKey(1) & 0xff==key.Esc:
+                self.logger('User canceled calibration', MESSTYPE_INFO)
                 sys.exit()
         cv2.destroyAllWindows()
         return chessboardVericles

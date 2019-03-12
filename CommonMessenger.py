@@ -26,5 +26,13 @@ class CommonMessenger:
         capturedPieceName=target.getName()
         return '{} bije {}'.format(pieceName, capturedPieceName)
 
-    def getCastlingMessage(self):
-        return True, 'Roszada'
+    def getCastlingMessage(self, castlingType, color):
+        if color=='white':
+            color='Biały'
+        else:
+            color='Czarny'
+
+        if castlingType=='long':
+            return '{} wykonuje długą roszadę'.format(color) 
+        else:
+            return '{} wykonuje krótką roszadę'.format(color) 
