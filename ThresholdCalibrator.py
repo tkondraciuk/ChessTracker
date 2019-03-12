@@ -57,7 +57,7 @@ class ThresholdCalibrator:
 
     def testThreshold(self, thres):
         self.classifier.setThreshold(thres)
-        self.fieldSeparator.updateChessboardFields()
+        self.fieldSeparator.updateChessboardFields(newFrame=False)
         self.logger.saveUnlabeledFields(self.fields, 'Threshold '+str(thres))
         states = list(map(lambda x: x.state, self.fields))
         self.count+=1
@@ -67,6 +67,7 @@ class ThresholdCalibrator:
         print('Umieść figury na pozycjach startowych i wciśnij Spację')
         while True:
             if keyboard.is_pressed('Space'):
+                self.fieldSeparator.cameraHandler.GetFrame()
                 break
             if keyboard.is_pressed('Esc'):
                 sys.exit()

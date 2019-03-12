@@ -66,7 +66,9 @@ class ChessboardState:
         message=''
         if len(changes)==4:
             self.logger.log('4 changes found. Castling detected!', MESSTYPE_INFO)
-            message=self.getCastling(changes)
+            ret, message=self.getCastling(changes)
+            if not ret:
+                raise Exception('Wystąpił błąd przy odczytaniu ruchu')
         elif len(changes)==2:
             self.logger.log('2 changes found.', MESSTYPE_INFO)
             startField, targetField=self.getStartAndTargetFields(changes)
@@ -81,34 +83,74 @@ class ChessboardState:
         return message
 
     def getCastling(self, changes):
-        succes=True
-        startFields, targetFields=self.getStartAndTargetFields(changes)
-        piecesColor=np.mean([f.currentPiece.color for f in startFields])
-        if piecesColor==FIELD_BLACK_PIECE:
-            king=[f for f in startFields if f.currentPiece.figure==FIGURE_KING and f.label=='E8']
-            rook=[f for f in startFields if f.currentPiece.figure==FIGURE_ROOK and f.label in ['A8', 'H8']]
-            shortCastlingPath=['F8','G8']
-            longCastlingPath=['B8','C8','D8']
-        elif piecesColor==FIELD_WHITE_PIECE:
-            king=[f for f in startFields if f.currentPiece.figure==FIGURE_KING and f.label=='E1']
-            rook=[f for f in startFields if f.currentPiece.figure==FIGURE_ROOK and f.label in ['A1', 'H1']]
-            shortCastlingPath=['F1','G1']
-            longCastlingPath=['B1','C1','D1']
+        startPos, targetPos=self.getStartAndTargetFields(changes)
+        king=next(filter(lambda f: f.currentPiece.figure==FIGURE_KING,startPos),None)
+        rook=next(filter(lambda f: f.currentPiece.figure==FIGURE_ROOK,startPos),None)
+        # king=next([f for f in startPos if f.currentPiece.figure==FIGURE_KING],None)
+        # rook=next([f for f in startPos if f.currentPiece.figure==FIGURE_ROOK],None)
+        if king==None or rook==None:
+            return False, None
+
+        kingStartPos=''
+        rookStartPos=''
+        rookStartPos_A=''
+        rookStartPos_H=''
+        kingTargetLongPos=''
+        kingTargetShortPos=''
+        kingTargetPos=''
+        rookTargetLongPos=''
+        rookTargetShortPos=''
+        rookTargetPos=''
+        castlingType=''
+        color=''
+        if king.currentPiece.color==COLOR_WHITE and rook.currentPiece.color==COLOR_WHITE:
+            kingStartPos='E1'
+            rookStartPos_A='A1'
+            rookStartPos_H='H1'
+            kingTargetLongPos='C1'
+            kingTargetShortPos='G1'
+            rookTargetLongPos='D1'
+            rookTargetShortPos='F1'
+            color='white'
+        elif  king.currentPiece.color==COLOR_BLACK and rook.currentPiece.color==COLOR_BLACK:
+            kingStartPos='E8'
+            rookStartPos_A='A8'
+            rookStartPos_H='H8'
+            kingTargetLongPos='C8'
+            kingTargetShortPos='G8'
+            rookTargetLongPos='D8'
+            rookTargetShortPos='F8'
+            color='black'
         else:
-            return False
+            return False, None
 
-        king=king[0]
-        rook=rook[0]
-
-        if rook.label[0]=='A':
+        if rook.label==rookStartPos_A:
             castlingType='long'
-            kingTargetPoint='C'+king.label[1]
-            rookTargetPoint='D'+rook.label[1]
-        else:
+            rookStartPos=rookStartPos_A
+            kingTargetPos=kingTargetLongPos
+            rookTargetPos=rookTargetLongPos
+        elif rook.label==rookStartPos_H:
             castlingType='short'
-            kingTargetPoint='G'+king.label[1]
-            rookTargetPoint='F'+rook.label[1]
-           
+            rookStartPos=rookStartPos_H
+            kingTargetPos=kingTargetShortPos
+            rookTargetPos=rookTargetShortPos
+        else:
+            return False, None
+
+        if set([f.label for f in startPos])!={kingStartPos, rookStartPos} or set([f.label for f in targetPos])!={kingTargetPos, rookTargetPos}:
+            return False, None
+
+        message= self.messenger.getCastlingMessage(castlingType, color)
+        self.fields[kingTargetPos].setCurrentPiece(king.currentPiece)
+        self.fields[rookTargetPos].setCurrentPiece(rook.currentPiece)
+        for f in [king, rook]:
+            f.releaseField()
+
+        return True, message
+
+
+        
+
             
             
 

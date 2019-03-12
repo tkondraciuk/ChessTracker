@@ -21,6 +21,8 @@ class FieldSeparator:
     
     def cutImage(self,p1,p2):
         return self.image[p1[1]:p2[1],p1[0]:p2[0]]
+
+        
     def createChessboardFields(self):
         colorRange=self.calibration.getColorRange()
         for i in range(8):
@@ -34,8 +36,11 @@ class FieldSeparator:
             self.fields.append(row)
 
             
-    def updateChessboardFields(self):
-        self.image=self.cameraHandler.GetFrame()
+    def updateChessboardFields(self, newFrame=True):
+        if newFrame:
+            self.image=self.cameraHandler.GetFrame()
+        else:
+            self.image=self.cameraHandler.lastFrame
         for i in range(8):
             for j in range(8):
                 p1=self.fieldVerticles[i][j]
