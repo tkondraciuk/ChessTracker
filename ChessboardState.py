@@ -4,6 +4,8 @@ from ChessboardField import ChessboardField, FIELD_BLACK_PIECE, FIELD_WHITE_PIEC
 from Piece import *
 from CommonMessenger import CommonMessenger
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
+from InvalidMoveException import InvalidMoveException
+from InvalidCastlingException import InvalidCastlingException
 
 class ChessboardState:
     def __init__(self, fieldSeparator):
@@ -68,7 +70,7 @@ class ChessboardState:
             self.logger.log('4 changes found. Castling detected!', MESSTYPE_INFO)
             ret, message=self.getCastling(changes)
             if not ret:
-                raise Exception('Wystąpił błąd przy odczytaniu ruchu')
+                raise InvalidCastlingException('Wystąpił błąd przy odczytaniu ruchu')
         elif len(changes)==2:
             self.logger.log('2 changes found.', MESSTYPE_INFO)
             startField, targetField=self.getStartAndTargetFields(changes)
@@ -78,7 +80,7 @@ class ChessboardState:
                 startField.releaseField()
         else:
             self.logger.log(str(len(changes))+' changes found. Can\'t recognize the movement', MESSTYPE_ERROR)
-            raise Exception('Wystąpił błąd przy odczytaniu ruchu')
+            raise InvalidMoveException('Wystąpił błąd przy odczytaniu ruchu')
 
         return message
 
@@ -145,14 +147,6 @@ class ChessboardState:
             f.releaseField()
 
         return True, message
-
-
-        
-
-            
-            
-
-
 
     def getStartAndTargetFields(self,changes):
         #Pola z których zniknęła figura

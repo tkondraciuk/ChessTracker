@@ -3,6 +3,7 @@ import numpy as np
 import KeyboardList as Key
 import sys
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
+from MessageBoxes import infoBox
 
 
 class MarkerExtractionCalibrator:
@@ -18,11 +19,12 @@ class MarkerExtractionCalibrator:
 
     def __init__(self, cameraHandler):
         self.cameraHandler = cameraHandler
-        self.cmin = None
-        self.cmax = None
+        self.cmin = np.array([0,0,0])
+        self.cmax = np.array([127,255,255])
         self.logger = Logger()
 
     def Start(self):
+        infoBox('Ustaw minimalne i maksymalne wartości barwy, nasycenia i jasności, tak aby na szachownicy na podglądzie widoczne były tylko znaczniki, po czym wciśnij Spację.')
         self.logger.log('Marker Extration Calibration started.', MESSTYPE_INFO)
         self.AskUserForExtractionCriteria()
         self.logger.log('Marker lower limit found: '+str(self.cmin), MESSTYPE_INFO)
@@ -56,18 +58,19 @@ class MarkerExtractionCalibrator:
 
         cv2.namedWindow(self.windowName)
         cv2.namedWindow(self.trackbarsName)
+        
         cv2.createTrackbar(
-            self.hueMinLabel, self.trackbarsName, 0, 127, doNothing)
+            self.hueMinLabel, self.trackbarsName, self.cmin[0], 127, doNothing)
         cv2.createTrackbar(
-            self.hueMaxLabel, self.trackbarsName, 127, 127, doNothing)
+            self.hueMaxLabel, self.trackbarsName, self.cmax[0], 127, doNothing)
         cv2.createTrackbar(self.saturationMinLabel,
-                           self.trackbarsName, 0, 255, doNothing)
+                           self.trackbarsName, self.cmin[1], 255, doNothing)
         cv2.createTrackbar(self.saturationMaxLabel,
-                           self.trackbarsName, 255, 255, doNothing)
+                           self.trackbarsName, self.cmax[1], 255, doNothing)
         cv2.createTrackbar(self.valueMinLabel,
-                           self.trackbarsName, 0, 255, doNothing)
+                           self.trackbarsName, self.cmin[2], 255, doNothing)
         cv2.createTrackbar(self.valueMaxLabel,
-                           self.trackbarsName, 255, 255, doNothing)
+                           self.trackbarsName, self.cmax[2], 255, doNothing)
 
         while True:
             frame = self.cameraHandler.GetFrame()

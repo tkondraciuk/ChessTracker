@@ -24,10 +24,9 @@ class CameraHandler:
         timer.start()
         while True:
             ret, frame=self.cap.read()
-            if not ret:
-                raise Exception('Błąd kamery: klatka jest pusta!')
-            sub=np.subtract(frame, self.lastFrame)
-            self.lastFrame=frame
-            if np.any(sub):
-                timer.cancel()
-                return frame
+            if ret:
+                sub=np.subtract(frame, self.lastFrame)
+                self.lastFrame=frame
+                if np.any(sub):
+                    timer.cancel()
+                    return frame

@@ -7,12 +7,16 @@ from ChessboardField import FIELD_BLACK_PIECE, FIELD_WHITE_PIECE
 import keyboard
 import sys
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
+from ThresholdUnfoundException import ThresholdUnfoundException
+from MessageBoxes import *
+import os
 
 
 class ThresholdCalibrator:
     whiteNumber = 16
     blackNumber = 16
     count=1
+    thresholdsCount=0
 
     def __init__(self, fieldSeparator):
         self.fieldSeparator = fieldSeparator
@@ -25,12 +29,14 @@ class ThresholdCalibrator:
             f.classifier = self.classifier
 
     def Start(self):
+
+        infoBox('Umieść figury na szachownicy, zgodnie z regułami gry w szachy, po czym wciśnij OK.')
         self.logger.log('Classifier Threshold Searching started', MESSTYPE_INFO)
-        self.waitForFiguresPlacement()
+        #self.waitForFiguresPlacement()
         minThresholdFound = False
         maxThresholdFound = False
         thresholdsFound = False
-
+        print('Rozpoczęto poszukiwanie progu rozróżniającego kolory figur.')
         while not thresholdsFound and self.minThreshold <= self.maxThreshold:
             if not minThresholdFound:
                 minThresholdFound = self.testThreshold(self.minThreshold)
@@ -39,12 +45,16 @@ class ThresholdCalibrator:
 
             if not minThresholdFound:
                 self.minThreshold += 1
+                self.thresholdsCount+=1
             if not maxThresholdFound:
                 self.maxThreshold -= 1
+                self.thresholdsCount+=1
             thresholdsFound = maxThresholdFound and minThresholdFound
-            print('Min: '+str(self.minThreshold))
-            print('Max: '+str(self.maxThreshold))
-            print()
+            os.system('cls')
+            print('Przeszukano {} z 255'.format(self.thresholdsCount))
+            # print('Min: '+str(self.minThreshold))
+            # print('Max: '+str(self.maxThreshold))
+            # print()
 
         if self.minThreshold <= self.maxThreshold:
             classifierThreshold = (self.minThreshold + self.maxThreshold) / 2
@@ -53,7 +63,7 @@ class ThresholdCalibrator:
             self.logger.log('Threshold found: '+str(classifierThreshold), MESSTYPE_INFO)
         else:
             self.logger.log('Can\'t find threshold', MESSTYPE_ERROR)
-            raise Exception('Nie można znaleźć odpowiedniego progu')
+            raise ThresholdUnfoundException('Nie można znaleźć odpowiedniego progu')
 
     def testThreshold(self, thres):
         self.classifier.setThreshold(thres)

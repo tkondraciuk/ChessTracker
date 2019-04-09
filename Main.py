@@ -7,6 +7,9 @@ import CameraHandler
 import keyboard as key
 from tkinter import *
 import device as dev
+from InvalidMoveException import InvalidMoveException
+from InvalidCastlingException import InvalidCastlingException
+from MessageBoxes import *
 
 root=Tk()    
 def onButtonClick():
@@ -30,26 +33,13 @@ def getCameraId():
     chosenCameraName=currentChoice.get()
     return cameras.index(chosenCameraName)
 
-
-
     
+cameraId = getCameraId()
 
-
-def readCameraId():
-    f=open('./cameraId.txt','r')
-    fileString=f.read()
-    result=fileString.strip()
-    if result.isdigit():
-        return int(result)
-    else:
-        return 0
-    
-cameraId= getCameraId() #readCameraId()
-
-print('Usun wszystkie figury z planszy i wcisnij Spacje')
-while True:
-    if key.is_pressed('Space'):
-        break
+infoBox('Usuń wszystkie figury z planszy, a następnie wciśnij Spację')
+# while True:
+#     if key.is_pressed('Space'):
+#         break
 
 ch=CameraHandler.CameraHandler(cameraId) 
 calib=Calibration.Calibration(ch)
@@ -64,8 +54,23 @@ while True:
         break
     if key.is_pressed('Space'):
         i=0 
-        message=chessboardState.Update()
-        print(message)
+        try:
+            message=chessboardState.Update()
+            print(message)
+            print("Wykonaj następny ruch i wcisnij spacje.")
+        except InvalidMoveException as e:
+            errorBox('Wykonany ruch został błędnie odczytany. Za chwilę zostanie ponownie przeprowadzona procedura inicjalizacji. Upewnij się, że oświetlenie na szachownicy jest w miarę równomierne, po czym zamknij to okno. ')
+            e.Solve(calib)
+        except InvalidCastlingException as e:
+            answer=yesnoDialog('Czy wykonany przed chwilą ruch był roszadą?')
+            if answer=='no':
+                errorBox('Prawdopodobnie nastąpiło błędne odczytanie ruchu. Za chwilę zostanie ponownie przeprowadzona procedura inicjalizacji. Upewnij się, że oświetlenie na szachownicy jest w miarę równomierne, po czym zamknij to okno. ')
+                e.Solve(calib)
+            else:
+                errorBox('Wykonany przed chwilą ruch jest nieprawidłowy. Cofnij swój ruch i spróbuj wykonać go jeszcze raz. Jeśli problem się powtórzy należy w odpowiedzi do poprzedniego okna wybrać \'Nie\'.')
+
+            
         
-        print("Wykonaj następny ruch i wcisnij spacje.")
+        
+        
            

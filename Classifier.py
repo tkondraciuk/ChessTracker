@@ -24,8 +24,6 @@ class Classifier:
         else:
             return CF.FIELD_BLACK_PIECE
 
-
-
     def removeTransparentPixels(self, image):
         l=[]
         for row in image:

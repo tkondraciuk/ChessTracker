@@ -5,6 +5,8 @@ import ChessboardField as CF
 import keyboard
 import sys
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
+from InvalidPieceColorRecognitionException import InvalidPieceColorRecognitionException
+import os
 
 DIRECTION_NORTH=0
 DIRECTION_EAST=1
@@ -27,7 +29,7 @@ class FieldsLabelerCalibrator:
 
     def Start(self):
         self.logger.log('Field Objects Labeling started', MESSTYPE_INFO)
-        self.waitForPiecesPlacement()
+        #self.waitForPiecesPlacement()
         orient=self.getOrientation()
         orientString=''
         self.logger.log('Chessboard orientation found: '+orientString, MESSTYPE_INFO)
@@ -74,7 +76,7 @@ class FieldsLabelerCalibrator:
             return DIRECTION_WEST
         else:
             self.logger.log('Can\'t recognize a pieces colors! ', MESSTYPE_ERROR)
-            raise Exception('Nastąpił błąd w rozpoznaniu kolorów figur!')
+            raise InvalidPieceColorRecognitionException('Nastąpił błąd w rozpoznaniu kolorów figur!')
 
     def isBlackSide(self,side):
         side=np.array(side)

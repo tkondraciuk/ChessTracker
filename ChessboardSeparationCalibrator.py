@@ -3,6 +3,7 @@ import numpy as np
 import sys
 import KeyboardList as key
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
+from MessageBoxes import *
 
 class ChessboardSeparationCalibrator:
 
@@ -47,6 +48,7 @@ class ChessboardSeparationCalibrator:
                 elif len(chessboardVericles)<4:
                     chessboardVericles.append(clickPoint)
         
+        infoBox('Zaznacz wierzchołki szachownicy, a następnie wciśnij Spację.')
         chessboardVericles=[]
         cv2.namedWindow(self.windowName)
         cv2.setMouseCallback(self.windowName,getVerticle)
@@ -56,8 +58,9 @@ class ChessboardSeparationCalibrator:
             cv2.imshow(self.windowName, image)
 
             if cv2.waitKey(1) & 0xff == key.Space:
-                if len(chessboardVericles)<4:
-                    print('Zaznacz wierzcholki szachownicy, a następnie wcisnij Spacje')
+                vCount=len(chessboardVericles)
+                if vCount < 4:
+                    errorBox('Zaznaczono {} z 4 wierzchołków. Zaznacz wszystkie wierzchołki, a następnie wciśnij Spację.'.format(vCount))
                 else:
                     break
 
