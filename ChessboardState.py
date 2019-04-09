@@ -86,8 +86,6 @@ class ChessboardState:
         startPos, targetPos=self.getStartAndTargetFields(changes)
         king=next(filter(lambda f: f.currentPiece.figure==FIGURE_KING,startPos),None)
         rook=next(filter(lambda f: f.currentPiece.figure==FIGURE_ROOK,startPos),None)
-        # king=next([f for f in startPos if f.currentPiece.figure==FIGURE_KING],None)
-        # rook=next([f for f in startPos if f.currentPiece.figure==FIGURE_ROOK],None)
         if king==None or rook==None:
             return False, None
 

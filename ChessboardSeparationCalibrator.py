@@ -62,7 +62,7 @@ class ChessboardSeparationCalibrator:
                     break
 
             if cv2.waitKey(1) & 0xff==key.Esc:
-                self.logger('User canceled calibration', MESSTYPE_INFO)
+                self.logger.log('User canceled calibration', MESSTYPE_INFO)
                 sys.exit()
         cv2.destroyAllWindows()
         return chessboardVericles
