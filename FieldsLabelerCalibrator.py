@@ -7,6 +7,7 @@ import sys
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
 from InvalidPieceColorRecognitionException import InvalidPieceColorRecognitionException
 import os
+from MessageBoxes import *
 
 DIRECTION_NORTH=0
 DIRECTION_EAST=1
@@ -29,8 +30,14 @@ class FieldsLabelerCalibrator:
 
     def Start(self):
         self.logger.log('Field Objects Labeling started', MESSTYPE_INFO)
-        #self.waitForPiecesPlacement()
-        orient=self.getOrientation()
+
+        try:
+            orient=self.getOrientation()
+        except InvalidPieceColorRecognitionException as e:
+            errorBox('Wystąpił błąd w rozpoznawaniu koloru figur. Prawdopodobnie został on spowodowany niewłaściwymi warunkami oświetleniowymi. Spróbuj zadbać o to aby oświetlenie na szachownicy było w miarę równomierne, a następnie wciśnij OK, aby powtórzyć inicjalizację programu.')
+            e.Solve(self)
+            return
+
         orientString=''
         self.logger.log('Chessboard orientation found: '+orientString, MESSTYPE_INFO)
 

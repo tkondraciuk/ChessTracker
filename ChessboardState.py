@@ -6,11 +6,13 @@ from CommonMessenger import CommonMessenger
 from Logger import Logger, MESSTYPE_ERROR, MESSTYPE_INFO
 from InvalidMoveException import InvalidMoveException
 from InvalidCastlingException import InvalidCastlingException
+from MessageBoxes import *
 
 class ChessboardState:
-    def __init__(self, fieldSeparator):
-        self.fieldSeparator=fieldSeparator
-        self.fields=self.getFieldsDict(fieldSeparator.fields)
+    def __init__(self, calib):
+        self.calib=calib
+        self.fieldSeparator=calib.fieldSeparator
+        self.fields=self.getFieldsDict(self.fieldSeparator.fields)
         self.lastFields=dict()
         self.placePieces()
         self.messenger=CommonMessenger()
@@ -59,10 +61,22 @@ class ChessboardState:
         self.fieldSeparator.Log()
         self.logger.saveFieldStates(self.fields.values())
         changes=list(filter(lambda f: f.hasChanged(), self.fields.values()))
-        if len(changes)==0:
-            return ''
-        else:
-            return self.getMove(changes)
+
+        try:
+            if len(changes)==0:
+                return ''
+            else:
+                return self.getMove(changes)
+        except InvalidMoveException as e:
+            errorBox('Wykonany ruch został błędnie odczytany. Za chwilę zostanie ponownie przeprowadzona procedura inicjalizacji. Upewnij się, że oświetlenie na szachownicy jest w miarę równomierne, po czym zamknij to okno. ')
+            e.Solve(self.calib)
+        except InvalidCastlingException as e:
+            answer=yesnoDialog('Czy wykonany przed chwilą ruch był roszadą?')
+            if answer=='no':
+                errorBox('Prawdopodobnie nastąpiło błędne odczytanie ruchu. Za chwilę zostanie ponownie przeprowadzona procedura inicjalizacji. Upewnij się, że oświetlenie na szachownicy jest w miarę równomierne, po czym zamknij to okno. ')
+                e.Solve(self.calib)
+            else:
+                errorBox('Wykonany przed chwilą ruch jest nieprawidłowy. Cofnij swój ruch i spróbuj wykonać go jeszcze raz. Jeśli problem się powtórzy należy w odpowiedzi do poprzedniego okna wybrać \'Nie\'.')
 
     def getMove(self,changes):
         message=''

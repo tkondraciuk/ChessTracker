@@ -32,7 +32,14 @@ class ThresholdCalibrator:
 
         infoBox('Umieść figury na szachownicy, zgodnie z regułami gry w szachy, po czym wciśnij OK.')
         self.logger.log('Classifier Threshold Searching started', MESSTYPE_INFO)
-        #self.waitForFiguresPlacement()
+
+        try:
+            self.findThreshold()
+        except ThresholdUnfoundException as e:
+            errorBox('Nie znaleziono prawidłowego progu rozróżniającego kolory figur. Spróbuj dopasować warunki oświetleniowe, tak aby oświetlenie na szachownicy było w miarę równomierne, a następnie kliknij OK, aby powtórzyć inicjalizację programu.')
+            e.Solve(self)
+
+    def findThreshold(self):
         minThresholdFound = False
         maxThresholdFound = False
         thresholdsFound = False
