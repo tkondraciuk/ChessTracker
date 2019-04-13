@@ -11,7 +11,7 @@ from MessageBoxes import *
 class ChessboardState:
     def __init__(self, calib):
         self.calib=calib
-        self.fieldSeparator=calib.fieldSeparator
+        self.fieldSeparator=calib.FieldSeparator
         self.fields=self.getFieldsDict(self.fieldSeparator.fields)
         self.lastFields=dict()
         self.placePieces()
@@ -72,7 +72,7 @@ class ChessboardState:
             e.Solve(self.calib)
         except InvalidCastlingException as e:
             answer=yesnoDialog('Czy wykonany przed chwilą ruch był roszadą?')
-            if answer=='no':
+            if not answer:
                 errorBox('Prawdopodobnie nastąpiło błędne odczytanie ruchu. Za chwilę zostanie ponownie przeprowadzona procedura inicjalizacji. Upewnij się, że oświetlenie na szachownicy jest w miarę równomierne, po czym zamknij to okno. ')
                 e.Solve(self.calib)
             else:

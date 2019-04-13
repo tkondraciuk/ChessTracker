@@ -18,9 +18,10 @@ class ThresholdCalibrator:
     count=1
     thresholdsCount=0
 
-    def __init__(self, fieldSeparator):
-        self.fieldSeparator = fieldSeparator
-        self.fields = np.array(fieldSeparator.fields).ravel()
+    def __init__(self, calib):
+        self.calib=calib
+        self.fieldSeparator = calib.FieldSeparator
+        self.fields = np.array(self.fieldSeparator.fields).ravel()
         self.minThreshold = 0
         self.maxThreshold = 255
         self.classifier = Classifier()
@@ -37,13 +38,14 @@ class ThresholdCalibrator:
             self.findThreshold()
         except ThresholdUnfoundException as e:
             errorBox('Nie znaleziono prawidłowego progu rozróżniającego kolory figur. Spróbuj dopasować warunki oświetleniowe, tak aby oświetlenie na szachownicy było w miarę równomierne, a następnie kliknij OK, aby powtórzyć inicjalizację programu.')
-            e.Solve(self)
+            e.Solve(self.calib)
 
     def findThreshold(self):
         minThresholdFound = False
         maxThresholdFound = False
         thresholdsFound = False
-        print('Rozpoczęto poszukiwanie progu rozróżniającego kolory figur.')
+        
+        self.calib.cameraHandler.GetFrame()
         while not thresholdsFound and self.minThreshold <= self.maxThreshold:
             if not minThresholdFound:
                 minThresholdFound = self.testThreshold(self.minThreshold)
@@ -58,6 +60,7 @@ class ThresholdCalibrator:
                 self.thresholdsCount+=1
             thresholdsFound = maxThresholdFound and minThresholdFound
             os.system('cls')
+            print('Poszukiwanie progu rozróżniającego kolory figur:')
             print('Przeszukano {} z 255'.format(self.thresholdsCount))
             # print('Min: '+str(self.minThreshold))
             # print('Max: '+str(self.maxThreshold))
@@ -76,6 +79,7 @@ class ThresholdCalibrator:
         self.classifier.setThreshold(thres)
         self.fieldSeparator.updateChessboardFields(newFrame=False)
         self.logger.saveUnlabeledFields(self.fields, 'Threshold '+str(thres))
+        self.logger.saveRawFrame(self.calib.cameraHandler.lastFrame, 'Threshold '+str(thres))
         states = list(map(lambda x: x.state, self.fields))
         self.count+=1
         return states.count(FIELD_WHITE_PIECE) == self.whiteNumber and states.count(FIELD_BLACK_PIECE) == self.blackNumber

@@ -13,4 +13,5 @@ def errorBox(message):
 def yesnoDialog(message):
     root=Tk()
     root.withdraw()
-    return msb.askyesno('ChessTracker',message)
+    answer=msb.askyesno('ChessTracker',message)
+    return answer

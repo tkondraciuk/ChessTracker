@@ -48,13 +48,13 @@ class Calibration:
         self.FieldSeparator.createChessboardFields()
         self.FieldSeparator.Log('EmptyFields')
 
-        self.thresholdCalibrator=ThresholdCalibrator(self.FieldSeparator)
+        self.thresholdCalibrator=ThresholdCalibrator(self)
         self.thresholdCalibrator.Start()
 
-        self.fieldLabererCalibrator=FieldsLabelerCalibrator(self.FieldSeparator)
+        self.fieldLabererCalibrator=FieldsLabelerCalibrator(self)
         self.fieldLabererCalibrator.Start()
 
-        self.chessboardState=ChessboardState(self.FieldSeparator)
+        self.chessboardState=ChessboardState(self)
 
         infoBox('Etap inicjalizacji został zakończony sukcesem.')
 

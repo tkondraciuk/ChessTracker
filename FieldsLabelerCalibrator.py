@@ -23,9 +23,10 @@ class FieldsLabelerCalibrator:
 
     
 
-    def __init__(self, fieldSeparator):
-        self.fields=[] 
-        self.fieldSeparator=fieldSeparator
+    def __init__(self, calib):
+        self.calib=calib
+        self.fields=calib.FieldSeparator.fields 
+        self.fieldSeparator=calib.FieldSeparator
         self.logger=Logger()
 
     def Start(self):
@@ -35,7 +36,7 @@ class FieldsLabelerCalibrator:
             orient=self.getOrientation()
         except InvalidPieceColorRecognitionException as e:
             errorBox('Wystąpił błąd w rozpoznawaniu koloru figur. Prawdopodobnie został on spowodowany niewłaściwymi warunkami oświetleniowymi. Spróbuj zadbać o to aby oświetlenie na szachownicy było w miarę równomierne, a następnie wciśnij OK, aby powtórzyć inicjalizację programu.')
-            e.Solve(self)
+            e.Solve(self.calib)
             return
 
         orientString=''

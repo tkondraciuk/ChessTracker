@@ -10,6 +10,7 @@ import device as dev
 from InvalidMoveException import InvalidMoveException
 from InvalidCastlingException import InvalidCastlingException
 from MessageBoxes import *
+import os
 
 root=Tk()    
 def onButtonClick():
@@ -45,7 +46,8 @@ fieldSeparator=calib.GetFieldSeparator()
 chessboardState=calib.getChessboardStateInstance()
 i=0
 
-#print('Umiesc figury na planszy i wcisnij Spacje')
+os.system('cls')
+print('Wykonaj ruch i wcisnij spacje.')
 while True:
     if key.is_pressed('Escape'):
         break
